@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Bundling as-fast-as-possible with Fusebox"
-description: "Build and deploy a sample React app, bundled through Fusebox with Hot-Module-Replacement and serve through Express"
+description: "Learn how to build and deploy a React app using Fusebox with Hot-Module-Replacement"
 date: 2017-07-20 17:30
 category: Technical guide
 banner:
@@ -21,10 +21,14 @@ tags:
 - node
 - express
 ---
-`# "What in the world is bundling?"
+`## "What in the world is bundling?"
 Bundling in a web app is a **recipe** you'd make to **group and compress** a set of files with the same type in order for your users' browsers to download less files.
 
 Using bundling tools you can also make those files go through certain **pipes** and come out a different file. (e.g. for .scss files you can apply a Sass pipe to convert them into css, and bundle them into 1 final CSS file)
+
+You would use a tool like **fusebox**, then make a configuration to let it know how to handle each file format you're using in a project (e.g. compress PNGs), then when you import a PNG file as a module in your project, fusebox will make sure it gets compressed.
+
+For larger projects with multiple JS & CSS files, bundling tools are great since they will bundle all those files into 1 (and maybe even compress that final output if you like)
 
 ![Webpack](http://i.imgur.com/Keem1SS.jpg)
 
@@ -33,8 +37,8 @@ Bundling is an important step in making **scalable web-apps** these days, and **
 Today I'm going to introduce to you a new tool that bundles **faster than webpack2**, is **much simpler**, and offers **built-in typescript support**:
 ![FuseBox](http://fuse-box.org/static/img/logo.png)
 
-# Meet Fusebox
-Fusebox is very fast in bundling (& rebundling), thanks to its "aggressive module caching".
+## Meet Fusebox
+Fusebox is very fast at bundling (& rebundling), thanks to its "aggressive module caching".
 
 It is also very simple to make a bundle using Fusebox, take this as an example:
 ```javascript
@@ -55,27 +59,30 @@ fuse.bundle("app")
 fuse.run();
 ```
 Simple huh?
+This bundling configuration file will tell fusebox to look inside the `src` directory (starting with index.ts) to find your project files, and generate the bundled output in the `dist` folder.
 
-# Let's build a simple React app
+Since we've specified `index.ts` as our entry point, fusebox will know to compile the files from typescript to js.
+
+## Let's build a simple React app
 ![React](http://i.imgur.com/7KtKvNf.gif)
-First things first you need to install some things
+First things first you need to install some dependencies
 ```sh
 npm install --save react react-dom reflect-metadata
 ```
 ```sh
 npm install --save-dev babel-core babel-plugin-transform-react-jsx babel-preset-es2015 babel-preset-latest chalk fuse-box typescript uglify-js
 ```
-# What did I just install?
+## What did I just install?
 
-  - react
+  - react (React is a frontend library purposed for rendering and de-rendering content from a page)
   - babel libraries to be able to transpile react .jsx files into javascript
   - fuse-box
   - uglify-js to minify our final bundle
 
-We're going to have to build some files now. Here's an overview of the final folder structure:
+We're going to have to create some files now. Here's an overview of the final folder structure:
 ![Folder Structure](http://i.imgur.com/PEki8LO.jpg)
 
-Let's build the Fusebox configurations; make a file named `fuse.js` with the code below:
+Let's build the Fusebox configurations; create a file named `fuse.js` with the code below:
 ```js
 const {
     FuseBox,
@@ -261,7 +268,7 @@ $bundles
 
 </html>
 ```
-# We're ready to make our bundle now
+## We're ready to make our bundle now
 You can now run:
 ```sh
 node fuse
@@ -269,8 +276,8 @@ node fuse
 
 to make a bundle out of this react app. The results will go inside a folder named `dist`.
 
-# Let's make a simple server to show our app
-Now we'll make a simple NodeJS (express) server to just serve our `index.html` file that's generated inside `dist`
+## Serving the application
+Now we'll create a simple NodeJS (express) server to just serve our `index.html` file that's generated inside `dist`
 
 Make a new folder named `server` and store this code inside `server.js`:
 ```js
